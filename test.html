@@ -1,0 +1,21 @@
+<script type="text/javascript">
+window.addEventListener("DOMContentLoaded", function() {
+	var conn = new WebSocket('ws://localhost:8080');
+	conn.onopen = function(e) {
+		console.log("Connection established!");
+	};
+
+	conn.onmessage = function(e) {
+		console.log(e.data);
+		document.body.innerHTML = document.body.innerHTML + e.data + "<br/>";
+	};
+	
+	setTimeout(function () { 
+	conn.send('Hello World!'); 
+	conn.send('Hello Ratchet!'); 
+	conn.send('Hello WebSockets!'); 
+	}, 1000);
+	
+    }, false);
+
+</script>
