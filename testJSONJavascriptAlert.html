@@ -1,0 +1,59 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body>
+
+		Message: <input id="message" />
+		<button onclick="SendMessage()">Send the message</button>
+        <script type="text/javascript">
+			var conn = new WebSocket('ws://localhost:8080');
+			window.addEventListener("DOMContentLoaded", function() {
+				conn.onopen = function(e) {
+					console.log("Connection established!");
+				};
+
+				conn.onmessage = function(e) {
+					console.log(e.data);
+					document.body.innerHTML = document.body.innerHTML + e.data + "<br/>";
+					var jsonData = JSON.parse(e.data);
+					if (jsonData.action == "alert")
+					{
+						alert(jsonData.message);
+					}
+				};
+				
+				setTimeout(function () { 
+				var jsMessage = { };//json
+				jsMessage.action="alert";
+				jsMessage.message="A new browser has connected.";
+				var json = JSON.stringify(jsMessage);// JavaScript value to a JSON string
+				conn.send(json); 
+				}, 1000);
+			}, false);
+
+			function SendMessage() {
+				var jsMessage = { };//json
+				jsMessage.action="alert";
+				jsMessage.message=document.getElementById('message').value;
+				var json = JSON.stringify(jsMessage);// JavaScript value to a JSON string
+				conn.send(json); 
+			}
+		</script>
+    </body>
+</html>
+
+
+
